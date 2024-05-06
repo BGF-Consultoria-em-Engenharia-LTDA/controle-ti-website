@@ -8,7 +8,7 @@ const stock = ref<Array<StockData>>([]);
 
 async function fetchData() {
   try {
-    const response = await axios.get('http://localhost:8000/stock');
+    const response = await axios.get('https://bgfcontrole.deno.dev/stock');
     stock.value = response.data;
   } catch (error) {
     console.error('Error fetching data:', error);

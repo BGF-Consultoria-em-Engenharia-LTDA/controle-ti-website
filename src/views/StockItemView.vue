@@ -19,7 +19,7 @@
 
   async function fetchData() {
     try {
-      const response = await axios.get(`http://localhost:8000/stock/${id}`);
+      const response = await axios.get(`https://bgfcontrole.deno.dev/stock/${id}`);
       item.value = response.data;
     } catch (error) {
       console.error('Error fetching data:', error);
