@@ -5,9 +5,10 @@
   import InputText from 'primevue/inputtext';
   import Tag from 'primevue/tag';
   import { FilterMatchMode } from 'primevue/api';
+  import type { HintedString } from 'primevue/ts-helpers';
   import 'primeicons/primeicons.css';
   import { RouterLink } from 'vue-router';
-import { ref } from 'vue';
+  import { ref } from 'vue';
 
   defineProps<{
     items: Array<StockData>
@@ -21,7 +22,7 @@ import { ref } from 'vue';
     condition: { value: null, matchMode: FilterMatchMode.EQUALS }
   });
 
-  const getSeverity = (status: Status) => {
+  const getSeverity = (status: Status): HintedString<'secondary' | 'success' | 'info' | 'warning' | 'danger' | 'contrast'> | undefined => {
     switch (status) {
       case 'Disponível':
         return 'success';
@@ -33,7 +34,7 @@ import { ref } from 'vue';
         return 'danger';
 
       default:
-        return null;
+        return undefined;
     }
   }
 </script>
@@ -41,7 +42,7 @@ import { ref } from 'vue';
 <template>
   <DataTable resizableColumns columnResizeMode="fit" paginator :rows="10" :value="items" sortField="item" :sortOrder="1" :filters="filters"
    dataKey="id" filterDisplay="row" :globalFilterFields="['item', 'tag', 'status', 'condition']" 
-   tableStyle="min-width: 50rem" class="striped-table">
+   tableStyle="min-width: 50rem" class="striped-table col-sm-12">
     <template #header>
                 <div class="col-sm-12">
                     <IconField iconPosition="left">
@@ -56,12 +57,16 @@ import { ref } from 'vue';
             <template #loading> Carregando equipamentos. Por favor, espere. </template>
       <Column field="item" header="Equipamento" sortable></Column>
       <Column field="tag" header="Tag" sortable></Column>
-      <Column header="Status" sortable>
+      <Column field="status" header="Status" sortable>
         <template #body="itemProps">
           <Tag :value="itemProps.data.status" :severity="getSeverity(itemProps.data.status)" />
         </template>  
       </Column>
-      <Column field="affiliation" header="Afiliação" sortable></Column>
+      <Column field="affiliation.tag" header="Afiliação" sortable>
+        <template #body="itemProps">
+          <td v-tooltip.left="{value: itemProps.data.affiliation.name, autoHide: false}">{{ itemProps.data.affiliation.tag }}</td>
+        </template>
+      </Column>
       <Column header="Ações">
         <template #body="rowData">
           <div>
